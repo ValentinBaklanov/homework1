@@ -15,7 +15,7 @@ public class MyHashMap<K, V> {
 
     private MyNode<K, V>[] elements;
     private int capacity = 16;
-    private int nEl;
+    private int numberOfElements;
 
 
     static class MyNode<K, V> {
@@ -60,7 +60,7 @@ public class MyHashMap<K, V> {
      * @return int
      */
     public int size() {
-        return nEl;
+        return numberOfElements;
     }
 
     /**
@@ -72,13 +72,13 @@ public class MyHashMap<K, V> {
     public void put(K key, V value) {
         MyNode<K, V> newNode, oldNode;
 
-        if (nEl >= (int) (capacity * LOAD)) {
+        if (numberOfElements >= (int) (capacity * LOAD)) {
             resize();
         }
         newNode = new MyNode<>(key, value);
         if ((oldNode = elements[newNode.hash % capacity]) == null) {
             elements[newNode.hash % capacity] = newNode;
-            nEl++;
+            numberOfElements++;
         } else {
             MyNode<K, V> prev = null;
             while (oldNode != null &&
@@ -89,12 +89,12 @@ public class MyHashMap<K, V> {
             if (prev == null) {
                 newNode.next = oldNode;
                 elements[newNode.hash % capacity] = newNode;
-                nEl++;
+                numberOfElements++;
             } else {
                 prev.next = newNode;
             }
             if (oldNode == null) {
-                nEl++;
+                numberOfElements++;
             }
         }
     }
@@ -102,14 +102,14 @@ public class MyHashMap<K, V> {
     private void resize() {
         MyNode<K, V>[] newElements = new MyNode[capacity * 2];
         capacity *= 2;
-        nEl = 0;
+        numberOfElements = 0;
         for (MyNode<K, V> myNode : elements) {
             MyNode<K, V> newNode;
             while (myNode != null) {
                 newNode = new MyNode<>(myNode.key, myNode.value);
                 if ((newElements[newNode.hash % capacity]) == null) {
                     newElements[newNode.hash % capacity] = newNode;
-                    nEl++;
+                    numberOfElements++;
                 } else {
                     MyNode<K, V> prev = null;
                     while (myNode != null &&
@@ -120,12 +120,12 @@ public class MyHashMap<K, V> {
                     if (prev == null) {
                         newNode.next = newElements[newNode.hash % capacity];
                         newElements[newNode.hash % capacity] = newNode;
-                        nEl++;
+                        numberOfElements++;
                     } else {
                         prev.next = newNode;
                     }
                     if (myNode == null) {
-                        nEl++;
+                        numberOfElements++;
                     }
                 }
                 myNode = myNode.next;
@@ -173,7 +173,7 @@ public class MyHashMap<K, V> {
 
                         prev.next = node.next;
                     }
-                    nEl--;
+                    numberOfElements--;
                     return node.value;
                 }
                 prev = node;
